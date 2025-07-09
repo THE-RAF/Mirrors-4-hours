@@ -19,7 +19,7 @@ This project implements an interactive 2D sandbox for simulating mirror reflecti
   A fixed viewer position receives light rays from both real and virtual objects. It is used to trace visual paths and determine perceived object positions.
 
 - **Virtual Reflections**  
-  Mirrors reflect objects and **other mirrors**, forming **virtual rooms** through recursive spatial inversion. Each reflection creates a new virtual copy of all contained elements.
+  Mirrors reflect objects and **other mirrors**, forming **virtual rooms** through recursive spatial inversion (linear transformations). Each reflection creates a new virtual copy of all contained elements.
 
 - **User Interaction**  
   Clicking on any virtual object will:
