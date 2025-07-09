@@ -44,12 +44,32 @@ export class VirtualObject {
         // Create lighter/desaturated versions of original color
         const originalFill = this.originalObject.fill;
         
-        // Simple color transformation for virtual objects
-        if (originalFill === '#ff6b6b') return '#ffaaaa'; // Lighter red
-        if (originalFill === '#4ecdc4') return '#88dddd'; // Lighter teal
-        if (originalFill === '#f39c12') return '#f7cc66'; // Lighter orange
-        
-        return '#cccccc'; // Default gray
+        // Simple color transformation for virtual objects (transform any hex color to a lighter version)
+
+        const hexToRgb = (hex) => {
+            const bigint = parseInt(hex.slice(1), 16);
+            return [
+                (bigint >> 16) & 255,
+                (bigint >> 8) & 255,
+                bigint & 255
+            ];
+        };
+
+        const rgbToHex = (rgb) => {
+            return `#${rgb.map(channel => {
+                const hex = channel.toString(16);
+                return hex.length === 1 ? `0${hex}` : hex;
+            }).join('')}`;
+        };
+
+        // algorithm to lighten a hex color
+        const lightenColor = (color) => {
+            const rgb = hexToRgb(color);
+            const lighter = rgb.map(channel => Math.min(255, channel + 40));
+            return rgbToHex(lighter);
+        };
+
+        return lightenColor(originalFill);
     }
     
     /**

@@ -29,6 +29,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 fill: '#ff6b6b',
                 stroke: '#333',
                 strokeWidth: 2
+            },
+            {
+                // Square on the right
+                vertices: [
+                    { x: '56%', y: '38%' },  // Top left
+                    { x: '60%', y: '38%' },  // Top right
+                    { x: '60%', y: '42%' },  // Bottom right
+                    { x: '56%', y: '42%' }   // Bottom left
+                ],
+                fill: '#ffcc00',
+                stroke: '#333',
+                strokeWidth: 2
             }
         ],
         mirrors: [
