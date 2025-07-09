@@ -33,6 +33,13 @@ document.addEventListener('DOMContentLoaded', () => {
         ],
         mirrors: [
             {
+                // Vertical mirror at 40% of canvas width
+                x1: '40%', y1: '6%',
+                x2: '40%', y2: '94%',
+                stroke: '#2c3e50',
+                strokeWidth: 3
+            },
+            {
                 // Vertical mirror at 60% of canvas width
                 x1: '60%', y1: '6%',
                 x2: '60%', y2: '94%',
