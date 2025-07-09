@@ -1,7 +1,9 @@
 /**
  * @file main.js - Mirror Reflection Sandbox main entry point
- * Simple test setup to verify SVG canvas is working
+ * Main application initialization and simulation setup
  */
+
+import { MirrorSimulation } from './simulation.js';
 
 // Initialize the application when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
@@ -12,19 +14,20 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
     
-    console.log('Canvas found, rendering test circle...');
+    console.log('Canvas found, initializing simulation...');
     
-    // Create a simple test circle
-    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    circle.setAttribute('cx', '400'); // Center X
-    circle.setAttribute('cy', '400'); // Center Y
-    circle.setAttribute('r', '50');   // Radius
-    circle.setAttribute('fill', '#007acc'); // Blue color
-    circle.setAttribute('stroke', '#333');
-    circle.setAttribute('stroke-width', '2');
+    // Create and initialize the simulation
+    const simulation = new MirrorSimulation({
+        canvas: canvas,
+        width: 800,
+        height: 800
+    });
     
-    // Add the circle to the canvas
-    canvas.appendChild(circle);
+    // Initialize the simulation with sample objects
+    simulation.init();
     
-    console.log('Test circle rendered successfully');
+    // Make simulation available globally for debugging
+    window.simulation = simulation;
+    
+    console.log('Application initialized successfully - try dragging the objects!');
 });
