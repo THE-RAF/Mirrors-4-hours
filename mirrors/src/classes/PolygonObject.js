@@ -111,6 +111,11 @@ export class PolygonObject {
             
             // Update visual representation
             this.updateVisualProperties();
+            
+            // Trigger virtual object update callback if available
+            if (this.onPositionChange) {
+                this.onPositionChange();
+            }
         });
         
         document.addEventListener('mouseup', () => {

@@ -1,11 +1,12 @@
 /**
  * @file simulation.js - Mirror Reflection Sandbox simulation management
  * Classes: MirrorSimulation
- * Dependencies: PolygonObject, Mirror
+ * Dependencies: PolygonObject, Mirror, ReflectionEngine
  */
 
 import { PolygonObject } from './classes/PolygonObject.js';
 import { Mirror } from './classes/Mirror.js';
+import { ReflectionEngine } from './classes/ReflectionEngine.js';
 
 /**
  * @class MirrorSimulation
@@ -28,6 +29,8 @@ export class MirrorSimulation {
         // Scene objects
         this.objects = [];
         this.mirrors = [];
+        this.virtualObjects = [];
+        this.maxReflectionDepth = 2;
         this.isRunning = false;
     }
     
@@ -45,6 +48,9 @@ export class MirrorSimulation {
         
         // Create sample objects for testing
         this.createSampleObjects();
+        
+        // Generate virtual objects
+        this.updateVirtualObjects();
         
         // Render all objects
         this.renderScene();
@@ -93,6 +99,12 @@ export class MirrorSimulation {
      * @param {PolygonObject} config.object - Object to add to the scene
      */
     addObject({ object }) {
+        // Set up callback for when object position changes
+        object.onPositionChange = () => {
+            this.updateVirtualObjects();
+            this.renderScene();
+        };
+        
         this.objects.push(object);
     }
     
@@ -118,7 +130,12 @@ export class MirrorSimulation {
             mirror.render({ parentSvg: this.canvas });
         });
         
-        // Render objects on top
+        // Render virtual objects (middle layer)
+        this.virtualObjects.forEach(virtualObject => {
+            virtualObject.render({ parentSvg: this.canvas });
+        });
+        
+        // Render real objects on top
         this.objects.forEach(object => {
             object.render({ parentSvg: this.canvas });
         });
@@ -137,6 +154,8 @@ export class MirrorSimulation {
             mirror.destroy();
         });
         this.mirrors = [];
+        
+        this.clearVirtualObjects();
     }
     
     /**
@@ -198,6 +217,33 @@ export class MirrorSimulation {
             this.mirrors.splice(index, 1);
             mirror.destroy();
         }
+    }
+    
+    /**
+     * Update all virtual objects based on current real objects and mirrors
+     */
+    updateVirtualObjects() {
+        // Clear existing virtual objects
+        this.clearVirtualObjects();
+        
+        // Generate new virtual objects
+        this.virtualObjects = ReflectionEngine.calculateAllReflections({
+            objects: this.objects,
+            mirrors: this.mirrors,
+            maxDepth: this.maxReflectionDepth
+        });
+        
+        console.log(`Generated ${this.virtualObjects.length} virtual objects`);
+    }
+    
+    /**
+     * Clear all virtual objects from the scene
+     */
+    clearVirtualObjects() {
+        this.virtualObjects.forEach(virtualObject => {
+            virtualObject.destroy();
+        });
+        this.virtualObjects = [];
     }
     
     /**
