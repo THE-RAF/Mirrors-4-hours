@@ -3,7 +3,7 @@
  * Main application initialization and simulation setup
  */
 
-import { MirrorSimulation } from './simulation.js';
+import { MainSimulation } from './simulation/mainSimulation.js';
 
 // Initialize the application when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('Canvas found, initializing simulation...');
     
     // Create and initialize the simulation
-    const simulation = new MirrorSimulation({
+    const simulation = new MainSimulation({
         canvas: canvas,
         width: 800,
         height: 800
