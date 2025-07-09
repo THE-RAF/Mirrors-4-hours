@@ -4,6 +4,7 @@
  */
 
 import { VirtualObject } from './VirtualObject.js';
+import { VirtualViewer } from './VirtualViewer.js';
 
 /**
  * @class ReflectionEngine
@@ -104,6 +105,56 @@ export class ReflectionEngine {
         });
         
         return allVirtualObjects;
+    }
+    
+    /**
+     * Generate virtual viewer reflections
+     * @param {Object} config - Configuration object
+     * @param {Viewer} config.viewer - Real viewer to create reflections for
+     * @param {Array} config.mirrors - Array of mirrors in the scene
+     * @param {number} [config.maxDepth=2] - Maximum reflection depth
+     * @returns {Array} Array of VirtualViewer instances
+     */
+    static generateVirtualViewers({ viewer, mirrors, maxDepth = 2 }) {
+        const virtualViewers = [];
+        
+        if (!viewer) return virtualViewers;
+        
+        // For now, create simple first-level reflections
+        mirrors.forEach(mirror => {
+            const reflectedPosition = this.reflectPoint({
+                point: viewer.getPosition(),
+                mirror: mirror
+            });
+            
+            const virtualViewer = new VirtualViewer({
+                originalViewer: viewer,
+                reflectionChain: [mirror],
+                depth: 1,
+                position: reflectedPosition,
+                radius: viewer.radius
+            });
+            
+            virtualViewers.push(virtualViewer);
+        });
+        
+        return virtualViewers;
+    }
+    
+    /**
+     * Calculate all virtual objects and viewers for the scene
+     * @param {Object} config - Configuration object
+     * @param {Array} config.objects - Array of real objects
+     * @param {Viewer} config.viewer - Real viewer
+     * @param {Array} config.mirrors - Array of mirrors
+     * @param {number} [config.maxDepth=2] - Maximum reflection depth
+     * @returns {Object} Object containing virtualObjects and virtualViewers arrays
+     */
+    static calculateAllReflectionsWithViewer({ objects, viewer, mirrors, maxDepth = 2 }) {
+        const virtualObjects = this.calculateAllReflections({ objects, mirrors, maxDepth });
+        const virtualViewers = this.generateVirtualViewers({ viewer, mirrors, maxDepth });
+        
+        return { virtualObjects, virtualViewers };
     }
     
     /**

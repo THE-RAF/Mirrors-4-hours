@@ -36,6 +36,9 @@ export class Viewer {
         this.isDragging = false;
         this.dragOffset = { x: 0, y: 0 };
         
+        // Callbacks
+        this.onPositionChange = null;
+        
         // Bind event handlers
         this.handleMouseDown = this.handleMouseDown.bind(this);
         this.handleMouseMove = this.handleMouseMove.bind(this);
@@ -125,6 +128,11 @@ export class Viewer {
         // Update SVG element position
         this.element.setAttribute('cx', this.x);
         this.element.setAttribute('cy', this.y);
+        
+        // Trigger position change callback
+        if (this.onPositionChange) {
+            this.onPositionChange();
+        }
     }
     
     /**

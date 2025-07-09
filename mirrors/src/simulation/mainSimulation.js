@@ -44,8 +44,8 @@ export class MainSimulation {
         // Set up object callbacks for virtual object updates
         this.setupObjectCallbacks();
         
-        // Generate virtual objects
-        this.updateVirtualObjects();
+        // Generate virtual objects and viewers
+        this.updateVirtualObjectsAndViewers();
         
         // Render everything
         this.renderScene();
@@ -60,10 +60,19 @@ export class MainSimulation {
     setupObjectCallbacks() {
         this.realScene.getObjects().forEach(object => {
             object.onPositionChange = () => {
-                this.updateVirtualObjects();
+                this.updateVirtualObjectsAndViewers();
                 this.renderScene();
             };
         });
+        
+        // Set up viewer callback
+        const viewer = this.realScene.getViewer();
+        if (viewer) {
+            viewer.onPositionChange = () => {
+                this.updateVirtualObjectsAndViewers();
+                this.renderScene();
+            };
+        }
     }
     
     /**
@@ -77,12 +86,12 @@ export class MainSimulation {
         
         // Set up callback for virtual object updates
         object.onPositionChange = () => {
-            this.updateVirtualObjects();
+            this.updateVirtualObjectsAndViewers();
             this.renderScene();
         };
         
-        // Update virtual objects
-        this.updateVirtualObjects();
+        // Update virtual objects and viewers
+        this.updateVirtualObjectsAndViewers();
     }
     
     /**
@@ -92,7 +101,7 @@ export class MainSimulation {
      */
     removeObject({ object }) {
         this.realScene.removeObject({ object });
-        this.updateVirtualObjects();
+        this.updateVirtualObjectsAndViewers();
     }
     
     /**
@@ -102,8 +111,8 @@ export class MainSimulation {
         // Render real scene first
         this.realScene.renderRealScene();
         
-        // Render virtual objects on top
-        this.virtualScene.renderVirtualObjects({ parentSvg: this.realScene.canvas });
+        // Render virtual objects and viewers on top
+        this.virtualScene.renderVirtualObjectsAndViewers({ parentSvg: this.realScene.canvas });
     }
     
     /**
@@ -112,6 +121,17 @@ export class MainSimulation {
     updateVirtualObjects() {
         this.virtualScene.updateVirtualObjects({
             objects: this.realScene.getObjects(),
+            mirrors: this.realScene.getMirrors()
+        });
+    }
+    
+    /**
+     * Update all virtual objects and viewers based on current real objects, viewer, and mirrors
+     */
+    updateVirtualObjectsAndViewers() {
+        this.virtualScene.updateVirtualObjectsAndViewers({
+            objects: this.realScene.getObjects(),
+            viewer: this.realScene.getViewer(),
             mirrors: this.realScene.getMirrors()
         });
     }
@@ -130,6 +150,22 @@ export class MainSimulation {
      */
     getVirtualObjects() {
         return this.virtualScene.getVirtualObjects();
+    }
+    
+    /**
+     * Get all virtual viewers
+     * @returns {Array} Array of all virtual viewers
+     */
+    getVirtualViewers() {
+        return this.virtualScene.getVirtualViewers();
+    }
+    
+    /**
+     * Get the real viewer
+     * @returns {Viewer|null} The real viewer object
+     */
+    getViewer() {
+        return this.realScene.getViewer();
     }
     
     /**
