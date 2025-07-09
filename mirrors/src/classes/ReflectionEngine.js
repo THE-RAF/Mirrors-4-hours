@@ -63,24 +63,74 @@ export class ReflectionEngine {
     static generateVirtualObjects({ object, mirrors, maxDepth = 2 }) {
         const virtualObjects = [];
         
-        // For now, create simple first-level reflections
+        // Generate reflections recursively
+        this.generateReflectionsRecursive({
+            vertices: object.vertices,
+            originalObject: object,
+            mirrors,
+            maxDepth,
+            currentDepth: 0,
+            reflectionChain: [],
+            virtualObjects
+        });
+        
+        return virtualObjects;
+    }
+    
+    /**
+     * Recursively generate reflections for an object
+     * @param {Object} config - Configuration object
+     * @param {Array} config.vertices - Current vertices to reflect
+     * @param {PolygonObject} config.originalObject - Original real object
+     * @param {Array} config.mirrors - Array of mirrors
+     * @param {number} config.maxDepth - Maximum reflection depth
+     * @param {number} config.currentDepth - Current reflection depth
+     * @param {Array} config.reflectionChain - Chain of mirrors used so far
+     * @param {Array} config.virtualObjects - Array to store generated virtual objects
+     */
+    static generateReflectionsRecursive({ vertices, originalObject, mirrors, maxDepth, currentDepth, reflectionChain, virtualObjects }) {
+        // Base case: reached maximum depth
+        if (currentDepth >= maxDepth) {
+            return;
+        }
+        
+        // Generate reflections for each mirror
         mirrors.forEach(mirror => {
+            // Skip if this mirror was the last one used (to avoid immediate back-reflection)
+            if (reflectionChain.length > 0 && reflectionChain[reflectionChain.length - 1] === mirror) {
+                return;
+            }
+            
+            // Calculate reflected vertices
             const reflectedVertices = this.reflectPolygon({
-                vertices: object.vertices,
+                vertices: vertices,
                 mirror: mirror
             });
             
+            // Create new reflection chain
+            const newReflectionChain = [...reflectionChain, mirror];
+            
+            // Create virtual object for this reflection
             const virtualObject = new VirtualObject({
-                originalObject: object,
-                reflectionChain: [mirror],
-                depth: 1,
+                originalObject: originalObject,
+                reflectionChain: newReflectionChain,
+                depth: currentDepth + 1,
                 vertices: reflectedVertices
             });
             
             virtualObjects.push(virtualObject);
+            
+            // Recursively generate deeper reflections
+            this.generateReflectionsRecursive({
+                vertices: reflectedVertices,
+                originalObject: originalObject,
+                mirrors,
+                maxDepth,
+                currentDepth: currentDepth + 1,
+                reflectionChain: newReflectionChain,
+                virtualObjects
+            });
         });
-        
-        return virtualObjects;
     }
     
     /**
@@ -120,25 +170,75 @@ export class ReflectionEngine {
         
         if (!viewer) return virtualViewers;
         
-        // For now, create simple first-level reflections
-        mirrors.forEach(mirror => {
-            const reflectedPosition = this.reflectPoint({
-                point: viewer.getPosition(),
-                mirror: mirror
-            });
-            
-            const virtualViewer = new VirtualViewer({
-                originalViewer: viewer,
-                reflectionChain: [mirror],
-                depth: 1,
-                position: reflectedPosition,
-                radius: viewer.radius
-            });
-            
-            virtualViewers.push(virtualViewer);
+        // Generate reflections recursively
+        this.generateViewerReflectionsRecursive({
+            position: viewer.getPosition(),
+            originalViewer: viewer,
+            mirrors,
+            maxDepth,
+            currentDepth: 0,
+            reflectionChain: [],
+            virtualViewers
         });
         
         return virtualViewers;
+    }
+    
+    /**
+     * Recursively generate reflections for a viewer
+     * @param {Object} config - Configuration object
+     * @param {Object} config.position - Current position to reflect {x, y}
+     * @param {Viewer} config.originalViewer - Original real viewer
+     * @param {Array} config.mirrors - Array of mirrors
+     * @param {number} config.maxDepth - Maximum reflection depth
+     * @param {number} config.currentDepth - Current reflection depth
+     * @param {Array} config.reflectionChain - Chain of mirrors used so far
+     * @param {Array} config.virtualViewers - Array to store generated virtual viewers
+     */
+    static generateViewerReflectionsRecursive({ position, originalViewer, mirrors, maxDepth, currentDepth, reflectionChain, virtualViewers }) {
+        // Base case: reached maximum depth
+        if (currentDepth >= maxDepth) {
+            return;
+        }
+        
+        // Generate reflections for each mirror
+        mirrors.forEach(mirror => {
+            // Skip if this mirror was the last one used (to avoid immediate back-reflection)
+            if (reflectionChain.length > 0 && reflectionChain[reflectionChain.length - 1] === mirror) {
+                return;
+            }
+            
+            // Calculate reflected position
+            const reflectedPosition = this.reflectPoint({
+                point: position,
+                mirror: mirror
+            });
+            
+            // Create new reflection chain
+            const newReflectionChain = [...reflectionChain, mirror];
+            
+            // Create virtual viewer for this reflection
+            const virtualViewer = new VirtualViewer({
+                originalViewer: originalViewer,
+                reflectionChain: newReflectionChain,
+                depth: currentDepth + 1,
+                position: reflectedPosition,
+                radius: originalViewer.radius
+            });
+            
+            virtualViewers.push(virtualViewer);
+            
+            // Recursively generate deeper reflections
+            this.generateViewerReflectionsRecursive({
+                position: reflectedPosition,
+                originalViewer: originalViewer,
+                mirrors,
+                maxDepth,
+                currentDepth: currentDepth + 1,
+                reflectionChain: newReflectionChain,
+                virtualViewers
+            });
+        });
     }
     
     /**

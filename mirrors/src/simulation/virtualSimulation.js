@@ -14,9 +14,9 @@ import { ReflectionEngine } from '../classes/ReflectionEngine.js';
 export class VirtualSimulation {
     /**
      * @param {Object} config - Configuration object
-     * @param {number} [config.maxReflectionDepth=2] - Maximum reflection depth
+     * @param {number} [config.maxReflectionDepth=1] - Maximum reflection depth
      */
-    constructor({ maxReflectionDepth = 2 } = {}) {
+    constructor({ maxReflectionDepth = 1 } = {}) {
         // Virtual objects management
         this.virtualObjects = [];
         this.virtualViewers = [];

@@ -33,30 +33,30 @@ document.addEventListener('DOMContentLoaded', () => {
         ],
         mirrors: [
             {
-                // Vertical mirror at 40% of canvas width
-                x1: '40%', y1: '40%',
-                x2: '40%', y2: '60%',
+                // Vertical mirror at 33% of canvas width
+                x1: '33%', y1: '0%',
+                x2: '33%', y2: '100%',
                 stroke: '#2c3e50',
                 strokeWidth: 3
             },
             {
-                // Vertical mirror at 60% of canvas width
-                x1: '60%', y1: '40%',
-                x2: '60%', y2: '60%',
+                // Vertical mirror at 66% of canvas width
+                x1: '66%', y1: '0%',
+                x2: '66%', y2: '100%',
                 stroke: '#2c3e50',
                 strokeWidth: 3
             },
             {
-                // Horizontal mirror at 40% of canvas height
-                x1: '40%', y1: '40%',
-                x2: '60%', y2: '40%',
+                // Horizontal mirror at 33% of canvas height
+                x1: '0%', y1: '33%',
+                x2: '100%', y2: '33%',
                 stroke: '#2c3e50',
                 strokeWidth: 3
             },
             {
-                // Horizontal mirror at 60% of canvas height
-                x1: '40%', y1: '60%',
-                x2: '60%', y2: '60%',
+                // Horizontal mirror at 66% of canvas height
+                x1: '0%', y1: '66%',
+                x2: '100%', y2: '66%',
                 stroke: '#2c3e50',
                 strokeWidth: 3
             }
