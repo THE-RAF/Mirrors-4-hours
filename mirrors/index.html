@@ -4,9 +4,30 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite App</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: #ffffff;
+      }
+      
+      #app {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <svg id="mirror-canvas" width="800" height="800" viewBox="0 0 800 800" style="border: 1px solid #ccc; background: #ffffff;">
+        <!-- Mirror reflections will be rendered here -->
+      </svg>
+    </div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
