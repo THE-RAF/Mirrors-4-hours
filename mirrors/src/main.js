@@ -22,9 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
             {
                 // Triangle in the center
                 vertices: [
-                    { x: '50%', y: '50%' },  // Top vertex
-                    { x: '47%', y: '55%' },  // Bottom left
-                    { x: '53%', y: '55%' }   // Bottom right
+                    { x: '50%', y: '45%' },  // Top vertex
+                    { x: '47%', y: '50%' },  // Bottom left
+                    { x: '53%', y: '50%' }   // Bottom right
                 ],
                 fill: '#ff6b6b',
                 stroke: '#333',
@@ -34,15 +34,29 @@ document.addEventListener('DOMContentLoaded', () => {
         mirrors: [
             {
                 // Vertical mirror at 40% of canvas width
-                x1: '40%', y1: '6%',
-                x2: '40%', y2: '94%',
+                x1: '40%', y1: '40%',
+                x2: '40%', y2: '60%',
                 stroke: '#2c3e50',
                 strokeWidth: 3
             },
             {
                 // Vertical mirror at 60% of canvas width
-                x1: '60%', y1: '6%',
-                x2: '60%', y2: '94%',
+                x1: '60%', y1: '40%',
+                x2: '60%', y2: '60%',
+                stroke: '#2c3e50',
+                strokeWidth: 3
+            },
+            {
+                // Horizontal mirror at 40% of canvas height
+                x1: '40%', y1: '40%',
+                x2: '60%', y2: '40%',
+                stroke: '#2c3e50',
+                strokeWidth: 3
+            },
+            {
+                // Horizontal mirror at 60% of canvas height
+                x1: '40%', y1: '60%',
+                x2: '60%', y2: '60%',
                 stroke: '#2c3e50',
                 strokeWidth: 3
             }
@@ -50,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
         viewer: {
             // Viewer below the triangle
             x: '50%',
-            y: '65%',
+            y: '55%',
             radius: 15,
             fill: '#007acc',
             stroke: '#005a99',
