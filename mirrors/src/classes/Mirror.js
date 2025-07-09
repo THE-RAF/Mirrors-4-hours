@@ -35,10 +35,11 @@ export class Mirror {
     
     /**
      * Create and return the SVG line element for the mirror
-     * @param {SVGElement} parentSvg - Parent SVG container
+     * @param {Object} config - Configuration object
+     * @param {SVGElement} config.parentSvg - Parent SVG container
      * @returns {SVGElement} The created line element
      */
-    render(parentSvg) {
+    render({ parentSvg }) {
         if (this.element) {
             return this.element;
         }

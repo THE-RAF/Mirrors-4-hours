@@ -33,10 +33,11 @@ export class PolygonObject {
     
     /**
      * Create and return the SVG polygon element
-     * @param {SVGElement} parentSvg - Parent SVG container
+     * @param {Object} config - Configuration object
+     * @param {SVGElement} config.parentSvg - Parent SVG container
      * @returns {SVGElement} The created polygon element
      */
-    render(parentSvg) {
+    render({ parentSvg }) {
         if (this.element) {
             return this.element;
         }

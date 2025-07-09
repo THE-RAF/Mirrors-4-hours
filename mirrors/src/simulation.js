@@ -83,23 +83,25 @@ export class MirrorSimulation {
         });
         
         // Add objects to scene
-        this.addObject(triangle);
-        this.addObject(square);
+        this.addObject({ object: triangle });
+        this.addObject({ object: square });
     }
     
     /**
      * Add an object to the simulation
-     * @param {PolygonObject} object - Object to add to the scene
+     * @param {Object} config - Configuration object
+     * @param {PolygonObject} config.object - Object to add to the scene
      */
-    addObject(object) {
+    addObject({ object }) {
         this.objects.push(object);
     }
     
     /**
      * Remove an object from the simulation
-     * @param {PolygonObject} object - Object to remove from the scene
+     * @param {Object} config - Configuration object
+     * @param {PolygonObject} config.object - Object to remove from the scene
      */
-    removeObject(object) {
+    removeObject({ object }) {
         const index = this.objects.indexOf(object);
         if (index > -1) {
             this.objects.splice(index, 1);
@@ -113,12 +115,12 @@ export class MirrorSimulation {
     renderScene() {
         // Render mirrors first (background)
         this.mirrors.forEach(mirror => {
-            mirror.render(this.canvas);
+            mirror.render({ parentSvg: this.canvas });
         });
         
         // Render objects on top
         this.objects.forEach(object => {
-            object.render(this.canvas);
+            object.render({ parentSvg: this.canvas });
         });
     }
     
@@ -173,22 +175,24 @@ export class MirrorSimulation {
         });
         
         // Add mirror to scene
-        this.addMirror(verticalMirror);
+        this.addMirror({ mirror: verticalMirror });
     }
     
     /**
      * Add a mirror to the simulation
-     * @param {Mirror} mirror - Mirror to add to the scene
+     * @param {Object} config - Configuration object
+     * @param {Mirror} config.mirror - Mirror to add to the scene
      */
-    addMirror(mirror) {
+    addMirror({ mirror }) {
         this.mirrors.push(mirror);
     }
     
     /**
      * Remove a mirror from the simulation
-     * @param {Mirror} mirror - Mirror to remove from the scene
+     * @param {Object} config - Configuration object
+     * @param {Mirror} config.mirror - Mirror to remove from the scene
      */
-    removeMirror(mirror) {
+    removeMirror({ mirror }) {
         const index = this.mirrors.indexOf(mirror);
         if (index > -1) {
             this.mirrors.splice(index, 1);
