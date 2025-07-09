@@ -1,11 +1,12 @@
 /**
  * @file realSimulation.js - Real scene simulation management
  * Classes: RealSceneSimulation
- * Dependencies: PolygonObject, Mirror
+ * Dependencies: PolygonObject, Mirror, Viewer
  */
 
 import { PolygonObject } from '../classes/PolygonObject.js';
 import { Mirror } from '../classes/Mirror.js';
+import { Viewer } from '../classes/Viewer.js';
 
 /**
  * @class RealSceneSimulation
@@ -28,6 +29,7 @@ export class RealSceneSimulation {
         // Scene objects
         this.objects = [];
         this.mirrors = [];
+        this.viewer = null;
         this.isRunning = false;
     }
     
@@ -42,6 +44,9 @@ export class RealSceneSimulation {
         
         // Create mirror boundaries
         this.createMirrors();
+        
+        // Create viewer
+        this.createViewer();
         
         // Create sample objects for testing
         this.createSampleObjects();
@@ -152,7 +157,22 @@ export class RealSceneSimulation {
     }
     
     /**
-     * Render real objects and mirrors only
+     * Create the viewer (observer) for the scene
+     */
+    createViewer() {
+        // Place viewer in the bottom-left area of the canvas
+        this.viewer = new Viewer({
+            x: 100,
+            y: this.height - 100,
+            radius: 15,
+            fill: '#007acc',
+            stroke: '#005a99',
+            strokeWidth: 2
+        });
+    }
+    
+    /**
+     * Render real objects, mirrors, and viewer
      */
     renderRealScene() {
         // Render mirrors first (background)
@@ -160,10 +180,13 @@ export class RealSceneSimulation {
             mirror.render({ parentSvg: this.canvas });
         });
         
-        // Render real objects on top
+        // Render real objects
         this.objects.forEach(object => {
             object.render({ parentSvg: this.canvas });
         });
+        
+        // Render viewer (observer)
+        this.viewer.render({ parentSvg: this.canvas });
     }
     
     /**
@@ -179,6 +202,11 @@ export class RealSceneSimulation {
             mirror.destroy();
         });
         this.mirrors = [];
+        
+        if (this.viewer) {
+            this.viewer.destroy();
+            this.viewer = null;
+        }
     }
     
     /**
@@ -195,6 +223,14 @@ export class RealSceneSimulation {
      */
     getMirrors() {
         return [...this.mirrors];
+    }
+    
+    /**
+     * Get the viewer in the real scene
+     * @returns {Viewer|null} The viewer object or null if not created
+     */
+    getViewer() {
+        return this.viewer;
     }
     
     /**
