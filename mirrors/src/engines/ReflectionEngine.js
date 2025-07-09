@@ -3,8 +3,8 @@
  * Classes: ReflectionEngine
  */
 
-import { VirtualObject } from './VirtualObject.js';
-import { VirtualViewer } from './VirtualViewer.js';
+import { VirtualObject } from '../entities/virtual/VirtualObject.js';
+import { VirtualViewer } from '../entities/virtual/VirtualViewer.js';
 
 /**
  * @class ReflectionEngine

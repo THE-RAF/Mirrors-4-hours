@@ -4,9 +4,9 @@
  * Dependencies: PolygonObject, Mirror, Viewer
  */
 
-import { PolygonObject } from '../classes/PolygonObject.js';
-import { Mirror } from '../classes/Mirror.js';
-import { Viewer } from '../classes/Viewer.js';
+import { PolygonObject } from '../entities/real/PolygonObject.js';
+import { Mirror } from '../entities/real/Mirror.js';
+import { Viewer } from '../entities/real/Viewer.js';
 
 /**
  * @class RealSceneSimulation

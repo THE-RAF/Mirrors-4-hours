@@ -4,7 +4,7 @@
  * Dependencies: ReflectionEngine
  */
 
-import { ReflectionEngine } from '../classes/ReflectionEngine.js';
+import { ReflectionEngine } from '../engines/ReflectionEngine.js';
 
 /**
  * @class VirtualSimulation
