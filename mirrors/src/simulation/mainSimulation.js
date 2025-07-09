@@ -1,11 +1,11 @@
 /**
  * @file mainSimulation.js - Main simulation coordinator
  * Classes: MainSimulation
- * Dependencies: RealSceneSimulation, ReflectionEngine
+ * Dependencies: RealSceneSimulation, VirtualSimulation
  */
 
 import { RealSceneSimulation } from './realSimulation.js';
-import { ReflectionEngine } from '../classes/ReflectionEngine.js';
+import { VirtualSimulation } from './virtualSimulation.js';
 
 /**
  * @class MainSimulation
@@ -23,9 +23,9 @@ export class MainSimulation {
         // Real scene manager
         this.realScene = new RealSceneSimulation({ canvas, width, height });
         
-        // Virtual objects
-        this.virtualObjects = [];
-        this.maxReflectionDepth = 2;
+        // Virtual scene manager
+        this.virtualScene = new VirtualSimulation({ maxReflectionDepth: 2 });
+        
         this.isRunning = false;
     }
     
@@ -37,6 +37,9 @@ export class MainSimulation {
         
         // Initialize real scene
         this.realScene.init();
+        
+        // Initialize virtual scene
+        this.virtualScene.init();
         
         // Set up object callbacks for virtual object updates
         this.setupObjectCallbacks();
@@ -100,36 +103,17 @@ export class MainSimulation {
         this.realScene.renderRealScene();
         
         // Render virtual objects on top
-        this.virtualObjects.forEach(virtualObject => {
-            virtualObject.render({ parentSvg: this.realScene.canvas });
-        });
+        this.virtualScene.renderVirtualObjects({ parentSvg: this.realScene.canvas });
     }
     
     /**
      * Update all virtual objects based on current real objects and mirrors
      */
     updateVirtualObjects() {
-        // Clear existing virtual objects
-        this.clearVirtualObjects();
-        
-        // Generate new virtual objects
-        this.virtualObjects = ReflectionEngine.calculateAllReflections({
+        this.virtualScene.updateVirtualObjects({
             objects: this.realScene.getObjects(),
-            mirrors: this.realScene.getMirrors(),
-            maxDepth: this.maxReflectionDepth
+            mirrors: this.realScene.getMirrors()
         });
-        
-        console.log(`Generated ${this.virtualObjects.length} virtual objects`);
-    }
-    
-    /**
-     * Clear all virtual objects from the scene
-     */
-    clearVirtualObjects() {
-        this.virtualObjects.forEach(virtualObject => {
-            virtualObject.destroy();
-        });
-        this.virtualObjects = [];
     }
     
     /**
@@ -141,10 +125,18 @@ export class MainSimulation {
     }
     
     /**
+     * Get all virtual objects
+     * @returns {Array} Array of all virtual objects
+     */
+    getVirtualObjects() {
+        return this.virtualScene.getVirtualObjects();
+    }
+    
+    /**
      * Stop the simulation and clean up
      */
     destroy() {
-        this.clearVirtualObjects();
+        this.virtualScene.destroy();
         this.realScene.destroy();
         this.isRunning = false;
         console.log('Main simulation destroyed');
