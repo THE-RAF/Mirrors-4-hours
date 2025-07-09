@@ -59,34 +59,20 @@ export class RealSceneSimulation {
      * Create sample objects for testing the simulation
      */
     createSampleObjects() {
-        // Create a triangle
+        // Create a smaller triangle in the middle of the canvas
         const triangle = new PolygonObject({
             vertices: [
-                { x: 150, y: 300 },
-                { x: 250, y: 300 },
-                { x: 200, y: 200 }
+                { x: this.width / 2, y: this.height / 2 - 30 },        // Top vertex
+                { x: this.width / 2 - 25, y: this.height / 2 + 20 },   // Bottom left
+                { x: this.width / 2 + 25, y: this.height / 2 + 20 }    // Bottom right
             ],
             fill: '#ff6b6b',
             stroke: '#333',
             strokeWidth: 2
         });
         
-        // Create a square
-        const square = new PolygonObject({
-            vertices: [
-                { x: 100, y: 450 },
-                { x: 180, y: 450 },
-                { x: 180, y: 530 },
-                { x: 100, y: 530 }
-            ],
-            fill: '#4ecdc4',
-            stroke: '#333',
-            strokeWidth: 2
-        });
-        
-        // Add objects to scene
+        // Add triangle to scene
         this.addObject({ object: triangle });
-        this.addObject({ object: square });
     }
     
     /**
@@ -139,15 +125,13 @@ export class RealSceneSimulation {
     createMirrors() {
         // Mirror box dimensions (centered in canvas with padding)
         const padding = 50;
-        const left = padding;
-        const right = this.width - padding;
         const top = padding;
         const bottom = this.height - padding;
         
-        // Create single vertical mirror in the center
+        // Create single vertical mirror at 60% of canvas width
         const verticalMirror = new Mirror({
-            x1: this.width / 2, y1: top,
-            x2: this.width / 2, y2: bottom,
+            x1: this.width * 0.6, y1: top,
+            x2: this.width * 0.6, y2: bottom,
             stroke: '#2c3e50',
             strokeWidth: 3
         });
@@ -160,10 +144,10 @@ export class RealSceneSimulation {
      * Create the viewer (observer) for the scene
      */
     createViewer() {
-        // Place viewer in the bottom-left area of the canvas
+        // Place viewer below the triangle in the center
         this.viewer = new Viewer({
-            x: 100,
-            y: this.height - 100,
+            x: this.width / 2,
+            y: this.height / 2 + 80,  // 80 pixels below the triangle
             radius: 15,
             fill: '#007acc',
             stroke: '#005a99',
