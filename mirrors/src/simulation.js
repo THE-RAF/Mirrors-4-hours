@@ -1,10 +1,11 @@
 /**
  * @file simulation.js - Mirror Reflection Sandbox simulation management
  * Classes: MirrorSimulation
- * Dependencies: PolygonObject
+ * Dependencies: PolygonObject, Mirror
  */
 
 import { PolygonObject } from './classes/PolygonObject.js';
+import { Mirror } from './classes/Mirror.js';
 
 /**
  * @class MirrorSimulation
@@ -26,6 +27,7 @@ export class MirrorSimulation {
         
         // Scene objects
         this.objects = [];
+        this.mirrors = [];
         this.isRunning = false;
     }
     
@@ -37,6 +39,9 @@ export class MirrorSimulation {
         
         // Clear any existing objects
         this.clearScene();
+        
+        // Create mirror boundaries
+        this.createMirrors();
         
         // Create sample objects for testing
         this.createSampleObjects();
@@ -106,6 +111,12 @@ export class MirrorSimulation {
      * Render all objects in the scene
      */
     renderScene() {
+        // Render mirrors first (background)
+        this.mirrors.forEach(mirror => {
+            mirror.render(this.canvas);
+        });
+        
+        // Render objects on top
         this.objects.forEach(object => {
             object.render(this.canvas);
         });
@@ -119,6 +130,11 @@ export class MirrorSimulation {
             object.destroy();
         });
         this.objects = [];
+        
+        this.mirrors.forEach(mirror => {
+            mirror.destroy();
+        });
+        this.mirrors = [];
     }
     
     /**
@@ -135,6 +151,49 @@ export class MirrorSimulation {
      */
     getObjects() {
         return [...this.objects];
+    }
+    
+    /**
+     * Create mirror boundaries forming a rectangular box
+     */
+    createMirrors() {
+        // Mirror box dimensions (centered in canvas with padding)
+        const padding = 50;
+        const left = padding;
+        const right = this.width - padding;
+        const top = padding;
+        const bottom = this.height - padding;
+        
+        // Create single vertical mirror in the center
+        const verticalMirror = new Mirror({
+            x1: this.width / 2, y1: top,
+            x2: this.width / 2, y2: bottom,
+            stroke: '#2c3e50',
+            strokeWidth: 3
+        });
+        
+        // Add mirror to scene
+        this.addMirror(verticalMirror);
+    }
+    
+    /**
+     * Add a mirror to the simulation
+     * @param {Mirror} mirror - Mirror to add to the scene
+     */
+    addMirror(mirror) {
+        this.mirrors.push(mirror);
+    }
+    
+    /**
+     * Remove a mirror from the simulation
+     * @param {Mirror} mirror - Mirror to remove from the scene
+     */
+    removeMirror(mirror) {
+        const index = this.mirrors.indexOf(mirror);
+        if (index > -1) {
+            this.mirrors.splice(index, 1);
+            mirror.destroy();
+        }
     }
     
     /**
