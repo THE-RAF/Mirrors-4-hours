@@ -18,10 +18,20 @@ export class MainSimulation {
      * @param {SVGElement} config.canvas - SVG canvas element for rendering
      * @param {number} [config.width=800] - Canvas width
      * @param {number} [config.height=800] - Canvas height
+     * @param {Array} [config.objects=[]] - Array of object configurations
+     * @param {Array} [config.mirrors=[]] - Array of mirror configurations
+     * @param {Object} [config.viewer=null] - Viewer configuration
      */
-    constructor({ canvas, width = 800, height = 800 }) {
+    constructor({ canvas, width = 800, height = 800, objects = [], mirrors = [], viewer = null }) {
         // Real scene manager
-        this.realScene = new RealSceneSimulation({ canvas, width, height });
+        this.realScene = new RealSceneSimulation({ 
+            canvas, 
+            width, 
+            height, 
+            objects, 
+            mirrors, 
+            viewer 
+        });
         
         // Virtual scene manager
         this.virtualScene = new VirtualSimulation({ maxReflectionDepth: 2 });

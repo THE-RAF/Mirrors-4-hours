@@ -16,14 +16,50 @@ document.addEventListener('DOMContentLoaded', () => {
     
     console.log('Canvas found, initializing simulation...');
     
+    // Scene configuration
+    const sceneConfig = {
+        objects: [
+            {
+                // Triangle in the center
+                vertices: [
+                    { x: '50%', y: '50%' },  // Top vertex
+                    { x: '47%', y: '55%' },  // Bottom left
+                    { x: '53%', y: '55%' }   // Bottom right
+                ],
+                fill: '#ff6b6b',
+                stroke: '#333',
+                strokeWidth: 2
+            }
+        ],
+        mirrors: [
+            {
+                // Vertical mirror at 60% of canvas width
+                x1: '60%', y1: '6%',
+                x2: '60%', y2: '94%',
+                stroke: '#2c3e50',
+                strokeWidth: 3
+            }
+        ],
+        viewer: {
+            // Viewer below the triangle
+            x: '50%',
+            y: '65%',
+            radius: 15,
+            fill: '#007acc',
+            stroke: '#005a99',
+            strokeWidth: 2
+        }
+    };
+    
     // Create and initialize the simulation
     const simulation = new MainSimulation({
         canvas: canvas,
         width: 800,
-        height: 800
+        height: 800,
+        ...sceneConfig
     });
     
-    // Initialize the simulation with sample objects
+    // Initialize the simulation with configured objects
     simulation.init();
     
     // Make simulation available globally for debugging

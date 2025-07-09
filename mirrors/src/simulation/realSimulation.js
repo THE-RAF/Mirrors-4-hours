@@ -19,12 +19,20 @@ export class RealSceneSimulation {
      * @param {SVGElement} config.canvas - SVG canvas element for rendering
      * @param {number} [config.width=800] - Canvas width
      * @param {number} [config.height=800] - Canvas height
+     * @param {Array} [config.objects=[]] - Array of object configurations
+     * @param {Array} [config.mirrors=[]] - Array of mirror configurations
+     * @param {Object} [config.viewer=null] - Viewer configuration
      */
-    constructor({ canvas, width = 800, height = 800 }) {
+    constructor({ canvas, width = 800, height = 800, objects = [], mirrors = [], viewer = null }) {
         // Canvas properties
         this.canvas = canvas;
         this.width = width;
         this.height = height;
+        
+        // Scene configuration
+        this.objectConfigs = objects;
+        this.mirrorConfigs = mirrors;
+        this.viewerConfig = viewer;
         
         // Scene objects
         this.objects = [];
@@ -34,7 +42,7 @@ export class RealSceneSimulation {
     }
     
     /**
-     * Initialize the real scene with default objects
+     * Initialize the real scene with configured objects
      */
     init() {
         console.log('Initializing real scene...');
@@ -42,14 +50,14 @@ export class RealSceneSimulation {
         // Clear any existing objects
         this.clearScene();
         
-        // Create mirror boundaries
-        this.createMirrors();
+        // Create mirrors from configuration
+        this.createMirrorsFromConfig();
         
-        // Create viewer
-        this.createViewer();
+        // Create viewer from configuration
+        this.createViewerFromConfig();
         
-        // Create sample objects for testing
-        this.createSampleObjects();
+        // Create objects from configuration
+        this.createObjectsFromConfig();
         
         this.isRunning = true;
         console.log('Real scene initialized successfully');
@@ -73,6 +81,34 @@ export class RealSceneSimulation {
         
         // Add triangle to scene
         this.addObject({ object: triangle });
+    }
+    
+    /**
+     * Create objects from configuration array
+     */
+    createObjectsFromConfig() {
+        if (this.objectConfigs.length === 0) {
+            // Fall back to default objects if no configuration provided
+            this.createSampleObjects();
+            return;
+        }
+        
+        this.objectConfigs.forEach(config => {
+            // Process relative positioning
+            const processedVertices = config.vertices.map(vertex => ({
+                x: this.resolvePosition(vertex.x, this.width),
+                y: this.resolvePosition(vertex.y, this.height)
+            }));
+            
+            const object = new PolygonObject({
+                vertices: processedVertices,
+                fill: config.fill || '#ff6b6b',
+                stroke: config.stroke || '#333',
+                strokeWidth: config.strokeWidth || 2
+            });
+            
+            this.addObject({ object });
+        });
     }
     
     /**
@@ -141,6 +177,30 @@ export class RealSceneSimulation {
     }
     
     /**
+     * Create mirrors from configuration array
+     */
+    createMirrorsFromConfig() {
+        if (this.mirrorConfigs.length === 0) {
+            // Fall back to default mirrors if no configuration provided
+            this.createMirrors();
+            return;
+        }
+        
+        this.mirrorConfigs.forEach(config => {
+            const mirror = new Mirror({
+                x1: this.resolvePosition(config.x1, this.width),
+                y1: this.resolvePosition(config.y1, this.height),
+                x2: this.resolvePosition(config.x2, this.width),
+                y2: this.resolvePosition(config.y2, this.height),
+                stroke: config.stroke || '#2c3e50',
+                strokeWidth: config.strokeWidth || 3
+            });
+            
+            this.addMirror({ mirror });
+        });
+    }
+    
+    /**
      * Create the viewer (observer) for the scene
      */
     createViewer() {
@@ -153,6 +213,40 @@ export class RealSceneSimulation {
             stroke: '#005a99',
             strokeWidth: 2
         });
+    }
+    
+    /**
+     * Create viewer from configuration
+     */
+    createViewerFromConfig() {
+        if (!this.viewerConfig) {
+            // Fall back to default viewer if no configuration provided
+            this.createViewer();
+            return;
+        }
+        
+        this.viewer = new Viewer({
+            x: this.resolvePosition(this.viewerConfig.x, this.width),
+            y: this.resolvePosition(this.viewerConfig.y, this.height),
+            radius: this.viewerConfig.radius || 15,
+            fill: this.viewerConfig.fill || '#007acc',
+            stroke: this.viewerConfig.stroke || '#005a99',
+            strokeWidth: this.viewerConfig.strokeWidth || 2
+        });
+    }
+    
+    /**
+     * Resolve position value (supports percentages and absolute values)
+     * @param {number|string} value - Position value (number or percentage string)
+     * @param {number} dimension - Canvas dimension (width or height)
+     * @returns {number} Resolved absolute position
+     */
+    resolvePosition(value, dimension) {
+        if (typeof value === 'string' && value.endsWith('%')) {
+            const percentage = parseFloat(value) / 100;
+            return dimension * percentage;
+        }
+        return value;
     }
     
     /**
