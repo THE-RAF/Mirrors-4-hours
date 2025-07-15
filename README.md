@@ -2,7 +2,7 @@
 
 A minimal interactive prototype for simulating recursive mirror reflections in a box formed by four orthogonal mirrors.
 
-## � Live Demo
+## 🚀 Live Demo
 
 **Main Demo:** [index.html](index.html)
 
