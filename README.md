@@ -10,7 +10,7 @@ https://github.com/user-attachments/assets/b053b6d8-e2c1-435c-bdc5-e5a61bc28794
 
 ## 🚀 Live Demo
 
-**Main Demo:** [index.html](index.html)
+**Main Demo:** [Demo Link](https://the-raf.github.io/Mirrors-4-hours/)
 
 This 4-hour prototype features:
 - **Mirror Box** - Four orthogonal mirrors creating recursive reflections (top-down view)
